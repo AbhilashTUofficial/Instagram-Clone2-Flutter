@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_flutter/resources/storage_methods.dart';
 
 
 class AuthMethods{
@@ -20,13 +21,45 @@ class AuthMethods{
 }) async{
     String res="error occurred";
     try{
-      if(email.isNotEmpty||username.isNotEmpty||password.isNotEmpty||bio.isNotEmpty||file!=null){
+      if(email.isNotEmpty||username.isNotEmpty||password.isNotEmpty||bio.isNotEmpty){
         // Register user
         UserCredential cred=await _auth.createUserWithEmailAndPassword(email: email, password: password);
+
+        // uploading dp
+
+        String photoUrl=await StorageMethods().uploadImageToStorage("profilePics", file, false);
+
         // Add user to database
-        
+        await _firestore.collection('users').doc(cred.user!.uid).set({
+          'username':username,
+          'email':email,
+          'bio':bio,
+          'followers':[],
+          'following':[],
+          'profile picture':photoUrl,
+          'uid':cred.user!.uid,
+
+        });
+        res='success';
+
+        // await _firestore.collection('users').add({
+        //   'username':username,
+        //   'email':email,
+        //   'bio':bio,
+        //   'followers':[],
+        //   'following':[],
+        //   'uid':cred.user!.uid,
+        // });
       }
-    }catch(err){
+    }
+    // on FirebaseAuthException catch(e){
+    //   if(e.code=='invalid-email'){
+    //     print("email is badly formatted");
+    //   }else if(e.code=='weak-password'){
+    //     print('password is weak');
+    //   }
+    // }
+    catch(err){
       res=err.toString();
     }
   return res;
