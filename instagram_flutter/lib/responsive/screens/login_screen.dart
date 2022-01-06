@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_flutter/resources/auth_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,6 +14,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading=false;
+
 
   @override
   void dispose() {
@@ -19,6 +23,30 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
   }
+
+  logInUser()async{
+    setState(() {
+      _isLoading=true;
+    });
+    String res = await AuthMethods().logInUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+    setState(() {
+      _isLoading=false;
+    });
+    if (res == 'success') {
+      showSnackBar("Success Logged In", context);
+    } else if (res == 'wrong-password') {
+      showSnackBar("Your Password is wrong!", context);
+    } else if (res == 'too-many-requests') {
+      showSnackBar("Slow down buddy", context);
+    } else {
+      showSnackBar(res, context);
+      print(res);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +89,16 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               //login button
               InkWell(
-                onTap: (){},
-                child: Container(
-                  child: const Text('Log In'),
+                onTap: ()=>logInUser(),
+                child:Container(
+                  child:_isLoading?const Center(
+                    child: SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(
+                          color: primaryColor,
+                        )),
+                  ): const Text('Log In'),
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),

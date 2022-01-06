@@ -20,7 +20,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
   Uint8List? _image;
-  bool _isLoading=false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -38,9 +38,9 @@ class _SignupScreenState extends State<SignupScreen> {
     });
   }
 
-  void signInUser()async{
+  void signInUser() async {
     setState(() {
-      _isLoading=true;
+      _isLoading = true;
     });
     String res = await AuthMethods().signUpUser(
       email: _emailController.text,
@@ -50,12 +50,19 @@ class _SignupScreenState extends State<SignupScreen> {
       file: _image!,
     );
     setState(() {
-      _isLoading=false;
+      _isLoading = false;
     });
-    if(res!='success'){
+    if (res == 'success') {
+      showSnackBar("Success Signed Up", context);
+    } else if (res == 'invalid-email') {
+      showSnackBar("Check Your Email!", context);
+    } else if (res == 'weak-password') {
+      showSnackBar("Your Password is too weak!", context);
+    } else if (res == 'email-already-in-use') {
+      showSnackBar("This Email is already in use", context);
+    } else {
       showSnackBar(res, context);
-    }else{
-
+      print(res);
     }
   }
 
@@ -82,7 +89,6 @@ class _SignupScreenState extends State<SignupScreen> {
               // profile picture
               Stack(
                 children: [
-
                   _image != null
                       ? CircleAvatar(
                           radius: 64,
@@ -150,9 +156,18 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               //login button
               InkWell(
-                onTap: ()=>signInUser(),
-                child: _isLoading?const Center(child: CircularProgressIndicator(),):Container(
-                  child: const Text('Sign Up'),
+                onTap: () => signInUser(),
+                child: Container(
+                  child: _isLoading
+                      ? const Center(
+                          child: SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(
+                                color: primaryColor,
+                              )),
+                        )
+                      : const Text('Sign Up'),
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
