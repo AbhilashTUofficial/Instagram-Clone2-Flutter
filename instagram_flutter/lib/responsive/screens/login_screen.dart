@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/responsive/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utils.dart';
+
+import '../mobile_screen_layout.dart';
+import '../responsive_layout_screen.dart';
+import '../web_screen_layout.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -36,6 +41,15 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading=false;
     });
     if (res == 'success') {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout(),
+          ),
+        ),
+      );
+
       showSnackBar("Success Logged In", context);
     } else if (res == 'wrong-password') {
       showSnackBar("Your Password is wrong!", context);
@@ -47,6 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  navigateToSignUp(){
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const SignupScreen()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                   GestureDetector(
-                    onTap: (){},
+                    onTap: ()=>navigateToSignUp(),
                     child: Container(
                       child: const Text(
                         "Sign Up.",

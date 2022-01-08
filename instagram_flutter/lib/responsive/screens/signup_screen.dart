@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/responsive/screens/login_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utils.dart';
+
+import '../mobile_screen_layout.dart';
+import '../responsive_layout_screen.dart';
+import '../web_screen_layout.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -53,6 +58,15 @@ class _SignupScreenState extends State<SignupScreen> {
       _isLoading = false;
     });
     if (res == 'success') {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout(),
+          ),
+        ),
+      );
+
       showSnackBar("Success Signed Up", context);
     } else if (res == 'invalid-email') {
       showSnackBar("Check Your Email!", context);
@@ -64,6 +78,11 @@ class _SignupScreenState extends State<SignupScreen> {
       showSnackBar(res, context);
       print(res);
     }
+  }
+
+  navigateToLogIn() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override
@@ -197,7 +216,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () => navigateToLogIn(),
                     child: Container(
                       child: const Text(
                         "Log In.",
