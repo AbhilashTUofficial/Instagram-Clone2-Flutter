@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       showSnackBar("Slow down buddy", context);
     } else {
       showSnackBar(res, context);
-      print(res);
+      // print(res);
     }
   }
 

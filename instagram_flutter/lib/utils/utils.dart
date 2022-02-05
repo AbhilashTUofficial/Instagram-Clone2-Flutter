@@ -9,7 +9,7 @@ pickImage(ImageSource source)async{
     return await _file.readAsBytes();
 
   }
-  print('no image');
+  // print('no image');
 }
 
 showSnackBar(String content,BuildContext context){

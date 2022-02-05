@@ -76,7 +76,7 @@ class _SignupScreenState extends State<SignupScreen> {
       showSnackBar("This Email is already in use", context);
     } else {
       showSnackBar(res, context);
-      print(res);
+      // print(res);
     }
   }
 
